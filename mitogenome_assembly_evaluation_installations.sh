@@ -8,7 +8,7 @@
 # Installing dependencies
 sudo apt-get update && sudo apt-get install -y build-essential uuid-dev \
 libgpgme-dev squashfs-tools libseccomp-dev wget pkg-config git cryptsetup-bin \
-&& sudo apt -y autoremove
+cmake && sudo apt -y autoremove
 
 # Making programs dir
 mkdir /home/ubuntu/programs/
@@ -16,12 +16,12 @@ cd /home/ubuntu/programs/
 
 # Download pre-compiled SPAdes:
 wget https://cab.spbu.ru/files/release3.14.1/SPAdes-3.14.1-Linux.tar.gz
-tar -zvxf SPAdes-3.14.1-Linux.tar.gz
+tar -zxf SPAdes-3.14.1-Linux.tar.gz
 sudo rm SPAdes-3.14.1-Linux.tar.gz
 
 # Download pre-compiled MEGAHIT:
 wget https://github.com/voutcn/megahit/releases/download/v1.2.9/MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
-tar -zvxf MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
+tar -zxf MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
 sudo rm MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
 
 # Download and install IDBA-UD/tran:
@@ -33,7 +33,7 @@ cd idba-1.1.3 $$ ./configure && make && cd ..
 
 # Download pre-compiled Trinity:
 wget https://github.com/trinityrnaseq/trinityrnaseq/releases/download/v2.11.0/trinityrnaseq-v2.11.0.FULL.tar.gz
-tar -zvxf trinityrnaseq-v2.11.0.FULL.tar.gz
+tar -zxf trinityrnaseq-v2.11.0.FULL.tar.gz
 sudo rm trinityrnaseq-v2.11.0.FULL.tar.gz
 cd trinityrnaseq-v2.11.0 && make && cd ..
 
@@ -44,7 +44,7 @@ sudo rm go1.15.6.linux-amd64.tar.gz
 echo -e '# Manually added  paths.\n\nexport PATH=/usr/local/go/bin:$PATH' \
 >> ~/.bashrc && source ~/.bashrc
 wget https://github.com/hpcng/singularity/releases/download/v3.7.0/singularity-3.7.0.tar.gz
-tar -zvxf singularity-3.7.0.tar.gz
+tar -zxf singularity-3.7.0.tar.gz
 sudo rm singularity-3.7.0.tar.gz
 cd singularity && ./mconfig && make -C builddir \
 && sudo make -C builddir install && cd ..
