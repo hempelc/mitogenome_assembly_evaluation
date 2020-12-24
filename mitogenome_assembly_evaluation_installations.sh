@@ -32,8 +32,9 @@ sudo rm trinityrnaseq-v2.11.0.FULL.tar.gz
 cd trinityrnaseq-v2.11.0 && make && cd ..
 
 # Download and install Go and Singularity (Needed for MitoZ):
-sudo apt-get update && sudo apt-get install -y libssl-dev uuid-dev \
-libgpgme11-dev libseccomp-dev pkg-config && sudo apt -y autoremove
+sudo apt-get update && sudo apt-get install -y build-essential uuid-dev \
+libgpgme-dev squashfs-tools libseccomp-dev pkg-config cryptsetup-bin \
+&& sudo apt -y autoremove
 wget https://golang.org/dl/go1.15.6.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzvf go1.15.6.linux-amd64.tar.gz
 sudo rm go1.15.6.linux-amd64.tar.gz
@@ -52,11 +53,11 @@ sudo rm -r singularity
 singularity pull  --name MitoZ.simg shub://linzhi2013/MitoZ:v2.3
 
 # Move back to dir where script was started:
-cd cd ..
+cd ..
 
 # Add downloaded/installed programs to path:
 for program in /home/ubuntu/programs/MEGAHIT-1.2.9-Linux-x86_64-static/bin/ \
 /home/ubuntu/programs/SPAdes-3.14.1-Linux/bin/ \
 /home/ubuntu/programs/idba-1.1.3/bin/ /home/ubuntu/programs/; do
-	echo -e "export PATH=${program}:$PATH" >> ~/.bashrc
+	echo -e "export PATH=${program}:'$PATH'" >> ~/.bashrc
 done && source ~/.bashrc
