@@ -5,6 +5,12 @@
 # A script to install DNA/RNA assemblers to eventually assemble mitogenomes
 # using a variety of assemblers and to compare and evaluate the results
 
+# Installing dependencies
+sudo apt-get update && sudo apt-get install -y build-essential uuid-dev \
+libgpgme-dev squashfs-tools libseccomp-dev wget pkg-config git cryptsetup-bin \
+&& sudo apt -y autoremove
+
+# Making programs dir
 mkdir /home/ubuntu/programs/
 cd /home/ubuntu/programs/
 
@@ -32,9 +38,6 @@ sudo rm trinityrnaseq-v2.11.0.FULL.tar.gz
 cd trinityrnaseq-v2.11.0 && make && cd ..
 
 # Download and install Go and Singularity (Needed for MitoZ):
-sudo apt-get update && sudo apt-get install -y build-essential uuid-dev \
-libgpgme-dev squashfs-tools libseccomp-dev pkg-config cryptsetup-bin \
-&& sudo apt -y autoremove
 wget https://golang.org/dl/go1.15.6.linux-amd64.tar.gz
 sudo tar -C /usr/local -xzvf go1.15.6.linux-amd64.tar.gz
 sudo rm go1.15.6.linux-amd64.tar.gz
