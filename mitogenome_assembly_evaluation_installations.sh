@@ -1,4 +1,4 @@
-#!/bin/bash -i
+#!/bin/bash
 
 # Version 0.1, made on 23 Dec 2020 by Chris Hempel (https://github.com/hempelc)
 
@@ -18,11 +18,16 @@ cd /home/ubuntu/programs/
 wget https://cab.spbu.ru/files/release3.14.1/SPAdes-3.14.1-Linux.tar.gz
 tar -zxf SPAdes-3.14.1-Linux.tar.gz
 sudo rm SPAdes-3.14.1-Linux.tar.gz
+for i in SPAdes-3.14.1-Linux/bin/*.py; do
+	sed -i 's/\#\!\/usr\/bin\/env python/\#\!\/usr\/bin\/env python3/g' ${i}
+done
 
 # Download pre-compiled MEGAHIT binaries:
 wget https://github.com/voutcn/megahit/releases/download/v1.2.9/MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
 tar -zxf MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
 sudo rm MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
+sed -i 's/\#\!\/usr\/bin\/env python/\#\!\/usr\/bin\/env python3/g' \
+MEGAHIT-1.2.9-Linux-x86_64-static/bin/megahit
 
 # Download and install IDBA-UD/tran:
 wget https://github.com/loneknightpy/idba/releases/download/1.1.3/idba-1.1.3.tar.gz
@@ -89,4 +94,6 @@ for program in /home/ubuntu/programs/ \
 /home/ubuntu/programs/salmon-latest_linux_x86_64/bin/ \
 /home/ubuntu/programs/bowtie2-2.4.2-linux-x86_64; do
 	echo -e "export PATH=${program}:"'$PATH' >> ~/.bashrc
-done && source ~/.bashrc
+done
+echo -e '\n# Manually added  aliases.\n\nalias python=python3' >> ~/.bashrc
+source ~/.bashrc
