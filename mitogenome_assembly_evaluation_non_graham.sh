@@ -5,19 +5,18 @@
 # A script to assemble mitogenomes using a variety of assemblers and to
 # compare and evaluate the results
 
-# Must have megahit, spades, idba-ud, Trinity, and idba-tran installed
-# Must have mitoz downloaded as singularity file
-# To download/install these programs automatically, run the script
-# mitogenome_assembly_evaluation_installations.sh
+# Must have megahit, spades, idba-ud, Trinity, and idba-tran installed and in PATH
+# Must have mitoz downloaded as singularity file and in PATH
+# To download/install these programs and add them to the PATH automatically,
+# run the script mitogenome_assembly_evaluation_installations.sh
 
 cmd="$0 $@" # Make variable containing full used command to print command in logfile
-usage="$(basename "$0") -1 <R1.fastq> -2 <R2.fastq> -l <length> -M </path/to/MitoZ.simg> [-t <n>]
+usage="$(basename "$0") -1 <R1.fastq> -2 <R2.fastq> -l <length> [-t <n>]
 
 Usage:
 	-1  Reads1
 	-2  Reads2
 	-l  Read length
-	-M  Path to MitoZ.simg singularity docker
 	-h  Display this help and exit"
 
 # Set default options:
@@ -36,7 +35,6 @@ while getopts ':1:2:l:h' opt; do
     2) R2="${OPTARG}" ;;
     l) length="${OPTARG}" ;;
 		t) threads="${OPTARG}" ;;
-		M) mitoz="${OPTARG}" ;;
 		h) echo "${usage}"
        exit ;;
     :) printf "Option -$OPTARG requires an argument."
@@ -51,7 +49,7 @@ shift $((OPTIND - 1))
 
 
 # Check if required options are set
-if [[  -z "${R1}" || -z "${R2}" || -z "${length}" || -z "${mitoz}"]]
+if [[  -z "${R1}" || -z "${R2}" || -z "${length}" || -z "MitoZ.simg"]]
 then
    echo -e "\n-1, -2, -l, and -M must be set.\n"
    echo -e "${usage}\n\n"
@@ -110,7 +108,7 @@ Trinity --seqType fq \
 
 ## Running MitoZ
 step_description_and_time "RUNNING MitoZ"
-${mitoz} assemble \
+MitoZ.simg assemble \
 --genetic_code 5 \
 --clade Arthropoda \
 --outprefix MitoZ \
@@ -131,7 +129,7 @@ TRINITY/Trinity.fa)
 
 ## Run the MitoZ module findmitoscaf on all outputs
 for i in ${assembly_list}; do
-	${mitoz} findmitoscaf \
+	MitoZ.simg findmitoscaf \
 	--genetic_code 5 \
 	--clade Arthropoda \
 	--outprefix $(echo $(basename ${i%/*})_findmitoscaf) \
@@ -144,7 +142,7 @@ for i in ${assembly_list}; do
 
 	# Annotate seqs
 
-	${mitoz} annotate \
+	MitoZ.simg annotate \
 	--genetic_code 5 \
 	--clade Arthropoda \
 	--outprefix $(echo $(basename ${i%/*})_annotate) \
@@ -157,6 +155,6 @@ done
 
 # Visualize seqs
 
-#${mitoz} visualize --gb mitogenome.gb
+#MitoZ.simg visualize --gb mitogenome.gb
 
 ) 2>&1 | tee mitogenome_assembly_evaluation_log.txt # Make logfile
