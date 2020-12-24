@@ -40,7 +40,7 @@ sudo rm cmake-3.19.2.tar.gz
 cd cmake-3.19.2
 ./bootstrap && make && sudo make install
 cd ..
-rm -r cmake-3.19.2/
+sudo rm -r cmake-3.19.2/
 wget https://github.com/BenLangmead/bowtie2/releases/download/v2.4.2/bowtie2-2.4.2-linux-x86_64.zip
 unzip bowtie2-2.4.2-linux-x86_64.zip
 rm bowtie2-2.4.2-linux-x86_64.zip
