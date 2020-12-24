@@ -5,11 +5,10 @@
 # A script to assemble mitogenomes using a variety of assemblers and to
 # compare and evaluate the results
 
-# Need to have scripts assign_taxonomy_to_NCBI_staxids.sh and LookupTaxonDetails3.py
-# in your PATH, and ete3 and justblast installed (https://pypi.org/project/justblast/)
-
-# Must have megahit, spades, idba-ud, Trinity, idba-tran, transabyss installed
+# Must have megahit, spades, idba-ud, Trinity, and idba-tran installed
 # Must have mitoz downloaded as singularity file
+# To download/install these programs automatically, run the script
+# mitogenome_assembly_evaluation_installations.sh
 
 cmd="$0 $@" # Make variable containing full used command to print command in logfile
 usage="$(basename "$0") -1 <R1.fastq> -2 <R2.fastq> -l <length> -M </path/to/MitoZ.simg> [-t <n>]

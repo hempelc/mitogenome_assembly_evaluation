@@ -1,4 +1,10 @@
-# Make dir for programs:
+#!/bin/bash
+
+# Version 0.1, made on 23 Dec 2020 by Chris Hempel (https://github.com/hempelc)
+
+# A script to install DNA/RNA assemblers to eventually assemble mitogenomes
+# using a variety of assemblers and to compare and evaluate the results
+
 mkdir /home/ubuntu/programs/
 cd /home/ubuntu/programs/
 
