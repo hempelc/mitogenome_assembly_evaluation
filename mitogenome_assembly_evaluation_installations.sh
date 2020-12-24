@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -i
 
 # Version 0.1, made on 23 Dec 2020 by Chris Hempel (https://github.com/hempelc)
 
@@ -36,7 +36,7 @@ cd ..
 # Download and install cmake, bowtie2, jellyfish, and salmon (needed for Trinity):
 wget https://github.com/Kitware/CMake/releases/download/v3.19.2/cmake-3.19.2.tar.gz
 tar -zxf cmake-3.19.2.tar.gz
-rm cmake-3.19.2.tar.gz
+sudo rm cmake-3.19.2.tar.gz
 cd cmake-3.19.2
 ./bootstrap && make && sudo make install
 cd ..
@@ -48,7 +48,7 @@ wget https://github.com/gmarcais/Jellyfish/releases/download/v2.3.0/jellyfish-li
 chmod +x jellyfish-linux
 wget https://github.com/COMBINE-lab/salmon/releases/download/v1.4.0/salmon-1.4.0_linux_x86_64.tar.gz
 tar -zxf salmon-1.4.0_linux_x86_64.tar.gz
-rm salmon-1.4.0_linux_x86_64
+rm salmon-1.4.0_linux_x86_64.tar.gz
 
 #Download and install Trinity:
 wget https://github.com/trinityrnaseq/trinityrnaseq/releases/download/v2.11.0/trinityrnaseq-v2.11.0.FULL.tar.gz
@@ -60,7 +60,7 @@ cd ..
 
 # Download and install Go and Singularity (Needed for MitoZ):
 wget https://golang.org/dl/go1.15.6.linux-amd64.tar.gz
-sudo tar -C /usr/local -xzvf go1.15.6.linux-amd64.tar.gz
+sudo tar -C /usr/local -zxf go1.15.6.linux-amd64.tar.gz
 sudo rm go1.15.6.linux-amd64.tar.gz
 echo -e '\n# Manually added  paths.\n\nexport PATH=/usr/local/go/bin:$PATH' \
 >> ~/.bashrc && source ~/.bashrc
