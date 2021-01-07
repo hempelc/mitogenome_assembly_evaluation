@@ -23,6 +23,11 @@ libssl-dev libz-dev unzip
 mkdir /home/ubuntu/programs/
 cd /home/ubuntu/programs/
 
+# Download pre-compiled SRA toolkit:
+wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.10.9/sratoolkit.2.10.9-ubuntu64.tar.gz
+tar -xzf sratoolkit.2.10.9-ubuntu64
+sudo rm sratoolkit.2.10.9-ubuntu64.tar.gz
+
 # Download pre-compiled SPAdes binaries:
 wget https://cab.spbu.ru/files/release3.14.1/SPAdes-3.14.1-Linux.tar.gz
 tar -zxf SPAdes-3.14.1-Linux.tar.gz
@@ -73,11 +78,13 @@ make
 cd ..
 
 # Download and install Go and Singularity (Needed for MitoZ):
+## Go
 wget https://golang.org/dl/go1.15.6.linux-amd64.tar.gz
 sudo tar -C /usr/local -zxf go1.15.6.linux-amd64.tar.gz
 sudo rm go1.15.6.linux-amd64.tar.gz
 echo -e '\n# Manually added  paths.\n\nexport PATH=/usr/local/go/bin:$PATH' \
 >> ~/.bashrc && source ~/.bashrc
+## Singularity
 wget https://github.com/hpcng/singularity/releases/download/v3.7.0/singularity-3.7.0.tar.gz
 tar -zxf singularity-3.7.0.tar.gz
 sudo rm singularity-3.7.0.tar.gz
@@ -97,6 +104,7 @@ cd ..
 
 # Add downloaded/installed programs to path:
 for program in /home/ubuntu/programs/ \
+/home/ubuntu/programs/sratoolkit.2.10.9-ubuntu64/bin \
 /home/ubuntu/programs/MEGAHIT-1.2.9-Linux-x86_64-static/bin/ \
 /home/ubuntu/programs/SPAdes-3.14.1-Linux/bin/ \
 /home/ubuntu/programs/idba-1.1.3/bin/ \

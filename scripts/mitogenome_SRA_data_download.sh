@@ -14,4 +14,4 @@
 # For now: testing only one SRA number
 SRA_number="SRR1145747"
 
-fastq-dump --split-3 ${SRA_number}
+fasterq-dump --split-3 ${SRA_number}
