@@ -17,7 +17,7 @@
 #NOTE 3: The SRA toolkit needs to be manually configured on AWS. When you run
 # the command vdb-config -i, follow the instructions on
 # https://github.com/ncbi/sra-tools/wiki/03.-Quick-Toolkit-Configuration
-# and choose /programs/sra_toolkit_required_folder
+# and choose /programs/sratoolkit.2.10.9-ubuntu64/sratoolkit_required_folder
 
 ## Installing dependencies
 sudo apt-get update && sudo apt-get install -y build-essential uuid-dev \
@@ -32,10 +32,10 @@ cd /home/ubuntu/programs/
 wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.10.9/sratoolkit.2.10.9-ubuntu64.tar.gz
 tar -xzf sratoolkit.2.10.9-ubuntu64.tar.gz
 sudo rm sratoolkit.2.10.9-ubuntu64.tar.gz
-mkdir sra_toolkit_required_folder
+mkdir sratoolkit.2.10.9-ubuntu64/sratoolkit_required_folder
 vdb-config -i # follow the instructions on
 # https://github.com/ncbi/sra-tools/wiki/03.-Quick-Toolkit-Configuration
-# and choose /programs/sra_toolkit_required_folder
+# and choose /programs/sratoolkit.2.10.9-ubuntu64/sratoolkit_required_folder
 
 # Download pre-compiled SPAdes binaries:
 wget https://cab.spbu.ru/files/release3.14.1/SPAdes-3.14.1-Linux.tar.gz
@@ -91,8 +91,9 @@ cd ..
 wget https://golang.org/dl/go1.15.6.linux-amd64.tar.gz
 sudo tar -C /usr/local -zxf go1.15.6.linux-amd64.tar.gz
 sudo rm go1.15.6.linux-amd64.tar.gz
-echo -e '\n# Manually added  paths.\n\nexport PATH=/usr/local/go/bin:$PATH' \
+echo -e '\n# Manually added  paths.\n\nexport GOPATH=$HOME\nexportPATH=/usr/local/go/bin:$PATH' \
 >> ~/.bashrc && source ~/.bashrc
+sudo rm -r ~/go
 ## Singularity
 wget https://github.com/hpcng/singularity/releases/download/v3.7.0/singularity-3.7.0.tar.gz
 tar -zxf singularity-3.7.0.tar.gz
