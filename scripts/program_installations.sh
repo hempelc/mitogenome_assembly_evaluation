@@ -5,7 +5,16 @@
 # A script to install DNA/RNA assemblers, enabling to assemble mitogenomes
 # using a variety of assemblers and to compare and evaluate the results
 
-# Installing dependencies
+# NOTE 1: This script is written for AWS web servers. By default, they don't
+# contain python2, and therefore don;t recoqnize the shebang for the env python
+# of some programs. So After installing these programs, the shebang is changed
+# to the env python3
+
+# NOTE 2: start with source in the terminal, not only with the path to the script,
+# so that changes to the PATH that are made at the end of the script are
+# permanently implemented on the account
+
+## Installing dependencies
 sudo apt-get update && sudo apt-get install -y build-essential uuid-dev \
 libgpgme-dev squashfs-tools libseccomp-dev wget pkg-config git cryptsetup-bin \
 libssl-dev libz-dev unzip
@@ -19,7 +28,7 @@ wget https://cab.spbu.ru/files/release3.14.1/SPAdes-3.14.1-Linux.tar.gz
 tar -zxf SPAdes-3.14.1-Linux.tar.gz
 sudo rm SPAdes-3.14.1-Linux.tar.gz
 for i in SPAdes-3.14.1-Linux/bin/*.py; do
-	sed -i 's/\#\!\/usr\/bin\/env python/\#\!\/usr\/bin\/env python3/g' ${i}
+	sed -i 's/\#\!\/usr\/bin\/env python/\#\!\/usr\/bin\/env python3/g' ${i} # Change shebang
 done
 
 # Download pre-compiled MEGAHIT binaries:
@@ -27,7 +36,7 @@ wget https://github.com/voutcn/megahit/releases/download/v1.2.9/MEGAHIT-1.2.9-Li
 tar -zxf MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
 sudo rm MEGAHIT-1.2.9-Linux-x86_64-static.tar.gz
 sed -i 's/\#\!\/usr\/bin\/env python/\#\!\/usr\/bin\/env python3/g' \
-MEGAHIT-1.2.9-Linux-x86_64-static/bin/megahit
+MEGAHIT-1.2.9-Linux-x86_64-static/bin/megahit # Change shebang
 
 # Download and install IDBA-UD/tran:
 wget https://github.com/loneknightpy/idba/releases/download/1.1.3/idba-1.1.3.tar.gz
@@ -92,7 +101,8 @@ for program in /home/ubuntu/programs/ \
 /home/ubuntu/programs/SPAdes-3.14.1-Linux/bin/ \
 /home/ubuntu/programs/idba-1.1.3/bin/ \
 /home/ubuntu/programs/salmon-latest_linux_x86_64/bin/ \
-/home/ubuntu/programs/bowtie2-2.4.2-linux-x86_64; do
+/home/ubuntu/programs/bowtie2-2.4.2-linux-x86_64 \
+/home/ubuntu/programs/trinityrnaseq-v2.11.0; do
 	echo -e "export PATH=${program}:"'$PATH' >> ~/.bashrc
 done
 echo -e '\n# Manually added  aliases.\n\nalias python=python3' >> ~/.bashrc
