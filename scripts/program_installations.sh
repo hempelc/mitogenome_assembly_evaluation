@@ -14,6 +14,11 @@
 # so that changes to the PATH that are made at the end of the script are
 # permanently implemented on the account
 
+#NOTE 3: The SRA toolkit needs to be manually configured on AWS. When you run
+# the command vdb-config -i, follow the instructions on
+# https://github.com/ncbi/sra-tools/wiki/03.-Quick-Toolkit-Configuration
+# and choose /programs/sra_toolkit_required_folder
+
 ## Installing dependencies
 sudo apt-get update && sudo apt-get install -y build-essential uuid-dev \
 libgpgme-dev squashfs-tools libseccomp-dev wget pkg-config git cryptsetup-bin \
@@ -25,8 +30,12 @@ cd /home/ubuntu/programs/
 
 # Download pre-compiled SRA toolkit:
 wget https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.10.9/sratoolkit.2.10.9-ubuntu64.tar.gz
-tar -xzf sratoolkit.2.10.9-ubuntu64
+tar -xzf sratoolkit.2.10.9-ubuntu64.tar.gz
 sudo rm sratoolkit.2.10.9-ubuntu64.tar.gz
+mkdir sra_toolkit_required_folder
+vdb-config -i # follow the instructions on
+# https://github.com/ncbi/sra-tools/wiki/03.-Quick-Toolkit-Configuration
+# and choose /programs/sra_toolkit_required_folder
 
 # Download pre-compiled SPAdes binaries:
 wget https://cab.spbu.ru/files/release3.14.1/SPAdes-3.14.1-Linux.tar.gz
