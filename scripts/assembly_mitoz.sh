@@ -18,6 +18,10 @@ step_description_and_time () {
 	echo -e "======== [$(date +%H:%M:%S)] ${1} [Runtime: $((($(date +%s)-$start)/3600))h $(((($(date +%s)-$start)%3600)/60))m] ========\n"
 }
 
+start=$(date +%s)
+mkdir test
+cd test
+
 ## Running MEGAHIT
 step_description_and_time "RUNNING MEGAHIT"
 megahit -t ${threads} -1 ${R1} -2 ${R2} -o MEGAHIT/
