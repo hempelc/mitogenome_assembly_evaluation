@@ -24,7 +24,7 @@ cd test
 
 ## Running MEGAHIT
 step_description_and_time "RUNNING MEGAHIT"
-megahit -t ${threads} -1 ${R1} -2 ${R2} -o MEGAHIT/
+megahit -t ${threads} -1 ../${R1} -2 ../${R2} -o MEGAHIT/
 
 ## Running MitoZ
 step_description_and_time "RUNNING MitoZ"
@@ -33,8 +33,8 @@ step_description_and_time "RUNNING MitoZ"
 --clade Arthropoda \
 --outprefix MitoZ \
 --thread_number ${threads} \
---fastq1 ${R1} \
---fastq2 ${R2} \
+--fastq1 ../${R1} \
+--fastq2 ../${R2} \
 --fastq_read_length ${length} \
 --insert_size 250 \
 --run_mode 2 \
@@ -45,26 +45,25 @@ assembly_list=(MEGAHIT/final.contigs.fa)
 
 ## Run the MitoZ module findmitoscaf on all outputs
 for i in ${assembly_list}; do
-	./MitoZ.simg findmitoscaf \
+	../MitoZ.simg findmitoscaf \
 	--genetic_code 5 \
 	--clade Arthropoda \
 	--outprefix $(echo $(basename ${i%/*})_findmitoscaf) \
 	--thread_number ${threads} \
-	--fastq1 ${R1} \
-	--fastq2 ${R2} \
+	--fastq1 ../${R1} \
+	--fastq2 ../${R2} \
 	--fastq_read_length ${length} \
 	--fastafile $i
-	rm -r tmp
 
 	# Annotate seqs
 
-./MitoZ.simg annotate \
+../MitoZ.simg annotate \
 	--genetic_code 5 \
 	--clade Arthropoda \
 	--outprefix $(echo $(basename ${i%/*})_annotate) \
 	--thread_number ${threads} \
-	--fastq1 ${R1} \
-	--fastq2 ${R2} \
+	--fastq1 ../${R1} \
+	--fastq2 ../${R2} \
 	--fastafile $(echo $(basename ${i%/*}).results/$(basename ${i%/*}).mitogenome.fa)
 	rm -r tmp
 done
