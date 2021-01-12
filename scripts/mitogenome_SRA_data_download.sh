@@ -4,14 +4,11 @@
 
 # A script to download SRA data to assemble mitogenomes
 
-# Usage: [script_name] <SRA_number_file>
+# Usage: [script_name] <SRA_list>
 
-# SRA_number_file=$1
+SRA_list=$1
 
-# TO DO: for loop over lines in SRA_number_file
-# SRA_number=XXX
-
-# For now: testing only one SRA number
-SRA_number="SRR1145747"
-
-fasterq-dump --split-3 ${SRA_number}
+while read SRA_number; do
+  mkdir ${SRA_number}_reads
+  fasterq-dump --split-3 --threads 32 --outdir ${SRA_number}_reads/ ${SRA_number}
+done <${SRA_list}
