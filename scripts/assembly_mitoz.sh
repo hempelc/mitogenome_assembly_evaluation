@@ -22,13 +22,13 @@ start=$(date +%s)
 mkdir test
 cd test
 
-## Running MEGAHIT
+# Running MEGAHIT
 step_description_and_time "RUNNING MEGAHIT"
 megahit -t ${threads} -1 ../${R1} -2 ../${R2} -o MEGAHIT/
 
-## Running MitoZ
-step_description_and_time "RUNNING MitoZ"
-./MitoZ.simg assemble \
+# Running MitoZ
+step_description_and_time "RUNNING MitoZ assembly module"
+../MitoZ.simg assemble \
 --genetic_code 5 \
 --clade Arthropoda \
 --outprefix MitoZ \
@@ -40,11 +40,18 @@ step_description_and_time "RUNNING MitoZ"
 --run_mode 2 \
 --filter_taxa_method 1 \
 --requiring_taxa 'Arthropoda'
+mv tmp MitoZ.result
+## Rename files
+for i in MitoZ.result/work71.*; do
+  mv ${i} $(echo ${i} | sed 's/work71/mitoz/')
+done
 
 assembly_list=(MEGAHIT/final.contigs.fa)
 
-## Run the MitoZ module findmitoscaf on all outputs
+# Run the MitoZ modules findmitoscaf and annotate on all outputs
 for i in ${assembly_list}; do
+  ## Findmitoscaf module
+  step_description_and_time "RUNNING MitoZ findmitoscaf module on ${i}"
 	../MitoZ.simg findmitoscaf \
 	--genetic_code 5 \
 	--clade Arthropoda \
@@ -54,16 +61,17 @@ for i in ${assembly_list}; do
 	--fastq2 ../${R2} \
 	--fastq_read_length ${length} \
 	--fastafile $i
+  mv tmp $(echo $(basename ${i%/*})_findmitoscaf.result
 
-	# Annotate seqs
-
-../MitoZ.simg annotate \
+	## Annotate module
+  step_description_and_time "RUNNING MitoZ annotate module on ${i}"
+  ../MitoZ.simg annotate \
 	--genetic_code 5 \
 	--clade Arthropoda \
 	--outprefix $(echo $(basename ${i%/*})_annotate) \
 	--thread_number ${threads} \
 	--fastq1 ../${R1} \
 	--fastq2 ../${R2} \
-	--fastafile $(echo $(basename ${i%/*}).results/$(basename ${i%/*}).mitogenome.fa)
-	rm -r tmp
+	--fastafile $(echo $(basename ${i%/*})_findmitoscaf.result/$(basename ${i%/*})_findmitoscaf.mitogenome.fa)
+	mv tmp $(echo $(basename ${i%/*})_annotate.result
 done
