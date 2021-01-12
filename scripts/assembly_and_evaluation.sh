@@ -42,9 +42,9 @@ done
 shift $((OPTIND - 1))
 
 # Check if required options are set
-if [[  -z "${R1}" || -z "${R2}" || -z "${length}" || -z "MitoZ.simg"]]
+if [[  -z "${R1}" || -z "${R2}" || -z "${length}" ]]
 then
-   echo -e "\n-1, -2, -l, and -M must be set.\n"
+   echo -e "\n-1, -2, and -l must be set.\n"
    echo -e "${usage}\n\n"
    echo -e "Exiting script.\n"
    exit
