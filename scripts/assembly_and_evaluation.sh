@@ -4,10 +4,10 @@
 
 # A script to assemble mitogenomes using MitoZ
 
-# Must have megahit, spades, idba-ud, Trinity, and idba-tran installed and in PATH
-# Must Mitoz downloaded as singularity file and in PATH
+# Must have MEGAHIT, SPAdes, IDBA-UD, Trinity, and IDBA-tran installed and in PATH
+# Must have Mitoz downloaded as singularity file and in PATH
 # To download/install all programs and add them to the PATH automatically,
-# run the script as follows: source mitogenome_assembly_evaluation_installations.sh
+# run the following script as follows: source mitogenome_assembly_evaluation_installations.sh
 
 cmd="$0 $@" # Make variable containing full used command to print command in logfile
 usage="$(basename "$0") -1 <R1.fastq> -2 <R2.fastq> -l <length> [-t <n>]
@@ -15,8 +15,8 @@ usage="$(basename "$0") -1 <R1.fastq> -2 <R2.fastq> -l <length> [-t <n>]
 Usage:
 	-1  Reads1
 	-2  Reads2
-	-l  Read length
-  -t  Threads
+	-l  Read length (needed for Mitoz)
+  -t  Threads (default:16)
 	-h  Display this help and exit"
 
 # Set default options:
@@ -105,7 +105,7 @@ Trinity --seqType fq \
 --left ../${R1} --right ../${R2} \
 --CPU ${threads} --output TRINITY
 
-## Running MitoZ assembly
+## Running MitoZ assembly module
 step_description_and_time "Running MitoZ assembly module"
 MitoZ.simg assemble \
 --genetic_code 5 \
@@ -121,7 +121,7 @@ MitoZ.simg assemble \
 --requiring_taxa 'Arthropoda'
 mv tmp MitoZ.result/
 mv MitoZ.result/ MITOZ/
-### Rename files
+### Rename output files
 for i in MITOZ/work71.*; do
   mv ${i} $(echo ${i} | sed 's/work71/mitoz/')
 done
@@ -130,9 +130,9 @@ done
 assembly_list=(MEGAHIT/final.contigs.fa SPADES/scaffolds.fasta RNASPADES/scaffolds.fasta IDBA_UD/contig.fa IDBA_TRAN/contig.fa \
 TRINITY/Trinity.fa MITOZ/mitoz.mitogenome.fa)
 
-# Running the MitoZ modules findmitoscaf and annotate on all outputs
+# Running the MitoZ modules findmitoscaf and annotate on all assembly outputs
 for i in ${assembly_list}; do
-  ## Change into respective dir and change variable name of fasta file
+  ## Make variables for easier file handling and change into respective dir
   assembler=$(dirname ${i})
   assembly_result=$(basename ${i})
   cd ${assembler}
