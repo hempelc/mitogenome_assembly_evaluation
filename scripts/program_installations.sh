@@ -14,7 +14,7 @@
 # so that changes to the PATH that are made at the end of the script are
 # permanently implemented on the account
 
-#NOTE 3: The SRA toolkit needs to be manually configured on AWS. When you run
+# NOTE 3: The SRA toolkit needs to be manually configured on AWS. When you run
 # the command vdb-config -i, follow the instructions on
 # https://github.com/ncbi/sra-tools/wiki/03.-Quick-Toolkit-Configuration
 # and choose /programs/sratoolkit.2.10.9-ubuntu64/sratoolkit_required_folder
