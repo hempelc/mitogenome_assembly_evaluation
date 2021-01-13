@@ -24,7 +24,7 @@ Usage:
 threads='16'
 
 # Set specified options
-while getopts ':1:2:l::ct:h' opt; do
+while getopts ':1:2:l:c:t:h' opt; do
   case "${opt}" in
     1) R1="${OPTARG}" ;;
     2) R2="${OPTARG}" ;;
