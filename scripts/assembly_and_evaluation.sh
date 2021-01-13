@@ -44,8 +44,7 @@ done
 shift $((OPTIND - 1))
 
 # Check if required options are set
-if [[  -z "${R1}" || -z "${R2}" || -z "${length}" || -z "${clade}"]]
-then
+if [[  -z "${R1}" || -z "${R2}" || -z "${length}" || -z "${clade}"]]; then
    echo -e "\n-1, -2, -l, and -c must be set.\n"
    echo -e "${usage}\n\n"
    echo -e "Exiting script.\n"
