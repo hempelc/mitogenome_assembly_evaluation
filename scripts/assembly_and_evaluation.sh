@@ -16,14 +16,14 @@ Usage:
 	-1  Reads1
 	-2  Reads2
 	-l  Read length
+  -t  Threads
 	-h  Display this help and exit"
 
 # Set default options:
 threads='16'
-start=$(date +%s)
 
 # Set specified options
-while getopts ':1:2:l:h' opt; do
+while getopts ':1:2:l:t:h' opt; do
   case "${opt}" in
     1) R1="${OPTARG}" ;;
     2) R2="${OPTARG}" ;;
@@ -52,8 +52,9 @@ fi
 
 
 # Define function to print steps with time
+start=$(date +%s)
 step_description_and_time () {
-	echo -e "======== [$(date +%H:%M:%S)] ${1} [Runtime: $((($(date +%s)-$start)/3600))h $(((($(date +%s)-$start)%3600)/60))m] ========\n" #" adding outcommented quote here to fix bug in colouring scheme of personal text editor
+	echo -e "\n======== [$(date +%H:%M:%S)] ${1} [Runtime: $((($(date +%s)-$start)/3600))h $(((($(date +%s)-$start)%3600)/60))m] ========\n" #" adding outcommented quote here to fix bug in colouring scheme of personal text editor
 }
 
 ( # Bracket for log file
@@ -69,8 +70,8 @@ echo -e "Number of threads was set to ${threads}.\n"
 echo -e "Script started with full command: ${cmd}\n"
 
 # Make output dir
-mkdir -p mitogenome_assembly_results
-cd mitogenome_assembly_results
+mkdir -p mitogenome_assembly_results/
+cd mitogenome_assembly_results/
 
 # Running assemblers
 
@@ -80,15 +81,15 @@ megahit -t ${threads} -1 ../${R1} -2 ../${R2} -o MEGAHIT/
 
 ## Running SPAdes
 step_description_and_time "Running SPADES"
-spades.py -t ${threads} -1 ${R1} -2 ${R2} -o SPADES/
+spades.py -t ${threads} -1 ../${R1} -2 ../${R2} -o SPADES/
 
 ## Running rnaSPAdes
 step_description_and_time "Running RNASPADES"
-spades.py  -t ${threads} --rna -1 ${R1} -2 ${R2} -o RNASPADES/
+spades.py  -t ${threads} --rna -1 ../${R1} -2 ../${R2} -o RNASPADES/
 
 ## Running IDBA-UD
 step_description_and_time "Running IDBA-UD"
-fq2fa --merge --filter ${R1} ${R2} idba_input.fa
+fq2fa --merge --filter ../${R1} ../${R2} idba_input.fa
 idba_ud --num_threads ${threads} --pre_correction -r idba_input.fa -o IDBA_UD/
 cp idba_input.fa IDBA_UD/
 
@@ -101,7 +102,7 @@ mv idba_input.fa IDBA_TRAN/
 step_description_and_time "Running TRINITY"
 Trinity --seqType fq \
 --max_memory $(echo $(($(getconf _PHYS_PAGES) * $(getconf PAGE_SIZE) / (1024 * 1024 * 1024)-5)))G \
---left ${R1} --right ${R2} \
+--left ../${R1} --right ../${R2} \
 --CPU ${threads} --output TRINITY
 
 ## Running MitoZ assembly
@@ -146,7 +147,7 @@ for i in ${assembly_list}; do
 	--fastq1 ../${R1} \
 	--fastq2 ../${R2} \
 	--fastq_read_length ${length} \
-	--fastafile ${assembly}
+	--fastafile ${assembly_result}
   mv tmp ${assembler}_findmitoscaf.result
 
 	## Annotate module
@@ -164,3 +165,4 @@ for i in ${assembly_list}; do
 done
 
 ) 2>&1 | tee mitogenome_assembly_log.txt # Make logfile
+mv mitogenome_assembly_log.txt mitogenome_assembly_results/
