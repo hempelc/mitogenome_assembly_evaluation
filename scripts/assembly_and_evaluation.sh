@@ -26,8 +26,8 @@ threads='16'
 # Set specified options
 while getopts ':1:2:l:c:t:h' opt; do
   case "${opt}" in
-    1) R1="${OPTARG}" ;;
-    2) R2="${OPTARG}" ;;
+    1) R1=$(realpath "${OPTARG}") ;;
+    2) R2=$(realpath "${OPTARG}") ;;
     l) length="${OPTARG}" ;;
     c) clade="${OPTARG}" ;;
     t) threads="${OPTARG}" ;;
@@ -92,19 +92,19 @@ cd mitogenome_assembly_results/
 
 ## Running MEGAHIT
 step_description_and_time "Running MEGAHIT"
-megahit -t ${threads} -1 ../${R1} -2 ../${R2} -o MEGAHIT/
+megahit -t ${threads} -1 ${R1} -2 ${R2} -o MEGAHIT/
 
 ## Running SPAdes
 step_description_and_time "Running SPADES"
-spades.py -t ${threads} -1 ../${R1} -2 ../${R2} -o SPADES/
+spades.py -t ${threads} -1 ${R1} -2 ${R2} -o SPADES/
 
 ## Running rnaSPAdes
 step_description_and_time "Running RNASPADES"
-spades.py  -t ${threads} --rna -1 ../${R1} -2 ../${R2} -o RNASPADES/
+spades.py  -t ${threads} --rna -1 ${R1} -2 ${R2} -o RNASPADES/
 
 ## Running IDBA-UD
 step_description_and_time "Running IDBA-UD"
-fq2fa --merge --filter ../${R1} ../${R2} idba_input.fa
+fq2fa --merge --filter ${R1} ${R2} idba_input.fa
 idba_ud --num_threads ${threads} --pre_correction -r idba_input.fa -o IDBA_UD/
 cp idba_input.fa IDBA_UD/
 
@@ -117,7 +117,7 @@ mv idba_input.fa IDBA_TRAN/
 step_description_and_time "Running TRINITY"
 Trinity --seqType fq \
 --max_memory $(echo $(($(getconf _PHYS_PAGES) * $(getconf PAGE_SIZE) / (1024 * 1024 * 1024)-5)))G \
---left ../${R1} --right ../${R2} \
+--left ${R1} --right ${R2} \
 --CPU ${threads} --output TRINITY
 
 ## Running MitoZ assembly module
@@ -127,8 +127,8 @@ MitoZ.simg assemble \
 --clade Arthropoda \
 --outprefix MITOZ_ASSEMBLY \
 --thread_number ${threads} \
---fastq1 ../${R1} \
---fastq2 ../${R2} \
+--fastq1 ${R1} \
+--fastq2 ${R2} \
 --fastq_read_length ${length} \
 --insert_size 250 \
 --run_mode 2 \
@@ -142,7 +142,7 @@ for i in MITOZ_ASSEMBLY.result/work71.*; do
 done
 
 # Make list of files from assemblers (all but MitoZ)
-assembly_list=(MEGAHIT/final.contigs.fa SPADES/scaffolds.fasta RNASPADES/scaffolds.fasta IDBA_UD/contig.fa IDBA_TRAN/contig.fa \
+assembly_list=(MEGAHIT/final.contigs.fa SPADES/scaffolds.fasta RNASPADES/transcripts.fasta IDBA_UD/contig.fa IDBA_TRAN/contig.fa \
 TRINITY/Trinity.fa MITOZ_ASSEMBLY.result/mitoz.mitogenome.fa)
 
 # Running the MitoZ modules findmitoscaf and annotate on all assembly outputs
@@ -159,8 +159,8 @@ for i in ${assembly_list}; do
 	--clade ${clade} \
 	--outprefix ${assembler}_findmitoscaf \
 	--thread_number ${threads} \
-	--fastq1 ../${R1} \
-	--fastq2 ../${R2} \
+	--fastq1 ${R1} \
+	--fastq2 ${R2} \
 	--fastq_read_length ${length} \
 	--fastafile ${assembly_result}
   mv tmp/ tmp_finsmitoscaf/
@@ -173,8 +173,8 @@ for i in ${assembly_list}; do
 	--clade ${clade} \
 	--outprefix ${assembler}_annotate \
 	--thread_number ${threads} \
-	--fastq1 ../${R1} \
-	--fastq2 ../${R2} \
+	--fastq1 ${R1} \
+	--fastq2 ${R2} \
 	--fastafile ${assembler}_findmitoscaf.result/${assembler}_findmitoscaf.mitogenome.fa
 	mv tmp/ tmp_annotate/
   mv tmp_annotate/ ${assembler}_annotate.result
