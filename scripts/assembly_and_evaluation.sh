@@ -80,7 +80,7 @@ step_description_and_time "OPTIONS"
 echo -e "Forward reads were defined as ${R1}.\n"
 echo -e "Reverse reads were defined as ${R2}.\n"
 echo -e "Read length was defined as ${length}.\n"
-echo -e "Number of threads was set to ${threads}.\n"
+echo -e "Clade was set to ${clade} with genetic code ${genetic_code}.\n".
 echo -e "Number of threads was set to ${threads}.\n"
 echo -e "Script started with full command: ${cmd}\n"
 
@@ -134,8 +134,7 @@ MitoZ.simg assemble \
 --run_mode 2 \
 --filter_taxa_method 1 \
 --requiring_taxa 'Arthropoda'
-mv tmp/ tmp_assembly/
-mv tmp_assembly/ MITOZ_ASSEMBLY.result/
+mv tmp/ MITOZ_ASSEMBLY.result/
 ### Rename output files
 for i in MITOZ_ASSEMBLY.result/work71.*; do
   mv ${i} $(echo ${i} | sed 's/work71/mitoz/')
@@ -146,11 +145,30 @@ assembly_list=(MEGAHIT/final.contigs.fa SPADES/scaffolds.fasta RNASPADES/transcr
 TRINITY/Trinity.fa MITOZ_ASSEMBLY.result/mitoz.mitogenome.fa)
 
 # Running the MitoZ modules findmitoscaf and annotate on all assembly outputs
-for i in ${assembly_list}; do
+mkdir final_outputs/
+mkdir final_outputs/circos/
+mkdir final_outputs/summaries/
+for i in "${assembly_list[@]}"; do
   ## Make variables for easier file handling and change into respective dir
   assembler=$(dirname ${i})
   assembly_result=$(basename ${i})
   cd ${assembler}
+
+  ## Make fasta headers short, otherwise errors
+  if [[ ${assembler} == "TRINITY" ]]; then
+    echo "Shortening ${assembler} fasta head names"
+    awk '{for(x=1;x<=NF;x++)if($x~/TRINITY/){sub(/TRINITY/,++i)}}1' \
+    Trinity.fasta | sed 's/_[^ ]*//g' > Trinity_short.fasta
+    assembly_result="Trinity_short.fasta"
+  elif [[ ${assembler} == "SPADES" ]]; then
+    echo "Shortening ${assembler} fasta head names"
+    sed 's/_length_.*$//g' scaffolds.fasta > scaffolds_short.fasta
+    assembly_result="scaffolds_short.fasta"
+  elif [[ ${assembler} == "RNASPADES" ]]; then
+    echo "Shortening ${assembler} fasta head names"
+    sed 's/_length_.*$//g' transcripts.fasta > transcripts_short.fasta
+    assembly_result="transcripts_short.fasta"
+  fi
 
   ## Findmitoscaf module
   step_description_and_time "Running MitoZ findmitoscaf module on ${assembler} output"
@@ -163,8 +181,7 @@ for i in ${assembly_list}; do
 	--fastq2 ${R2} \
 	--fastq_read_length ${length} \
 	--fastafile ${assembly_result}
-  mv tmp/ tmp_finsmitoscaf/
-  mv tmp_finsmitoscaf/ ${assembler}_findmitoscaf.result
+  mv tmp/ ${assembler}_findmitoscaf.result/tmp_findmitoscaf/
 
 	## Annotate module
   step_description_and_time "Running MitoZ annotate module on ${assembler} output"
@@ -176,8 +193,12 @@ for i in ${assembly_list}; do
 	--fastq1 ${R1} \
 	--fastq2 ${R2} \
 	--fastafile ${assembler}_findmitoscaf.result/${assembler}_findmitoscaf.mitogenome.fa
-	mv tmp/ tmp_annotate/
-  mv tmp_annotate/ ${assembler}_annotate.result
+	mv tmp/ ${assembler}_annotate.result/tmp_annotate/
+  for i in circos.jpg circos.svg summary.txt; do
+    mv ${assembler}_annotate.result/${i} ${assembler}_annotate.result/${assembler}_${i}
+  done
+  cp ${assembler}_annotate.result/*circos* ${assembler}_annotate.result/*summary.txt ../final_outputs/circos/
+  cp ${assembler}_annotate.result/*summary.txt ../final_outputs/summaries/
   cd ..
 done
 
