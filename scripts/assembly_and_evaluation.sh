@@ -85,8 +85,8 @@ echo -e "Number of threads was set to ${threads}.\n"
 echo -e "Script started with full command: ${cmd}\n"
 
 # Make output dir
-mkdir -p mitogenome_assembly_results/
-cd mitogenome_assembly_results/
+mkdir -p mitogenome_assembly_and_evaluation/
+cd mitogenome_assembly_and_evaluation/
 
 # Running assemblers
 
@@ -134,7 +134,7 @@ MitoZ.simg assemble \
 --run_mode 2 \
 --filter_taxa_method 1 \
 --requiring_taxa 'Arthropoda'
-mv tmp/ MITOZ_ASSEMBLY.result/
+mv tmp/ MITOZ_ASSEMBLY.result/assembly_tmp/
 ### Rename output files
 for i in MITOZ_ASSEMBLY.result/work71.*; do
   mv ${i} $(echo ${i} | sed 's/work71/mitoz/')
