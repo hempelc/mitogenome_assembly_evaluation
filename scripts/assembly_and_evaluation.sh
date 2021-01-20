@@ -28,7 +28,7 @@ asmbl_flag=true
 eval_flag=true
 
 # Set specified options
-while getopts ':1:2:l:c:a:e:t:h' opt; do
+while getopts ':1:2:l:c:aet:h' opt; do
   case "${opt}" in
     1) R1=$(realpath "${OPTARG}") ;;
     2) R2=$(realpath "${OPTARG}") ;;
@@ -48,11 +48,6 @@ while getopts ':1:2:l:c:a:e:t:h' opt; do
   esac
 done
 shift $((OPTIND - 1))
-
-echo $R1
-echo $R2
-echo $length
-echo $clade
 
 # Check if required options are set
 if [[ -z "${R1}" || -z "${R2}" || -z "${length}" || -z "${clade}" ]]; then
