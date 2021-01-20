@@ -236,4 +236,4 @@ fi
 cd ..
 
 ) 2>&1 | tee mitogenome_assembly_log.txt # Make logfile
-mv mitogenome_assembly_log.txt mitogenome_assembly_results/
+mv mitogenome_assembly_log.txt mitogenome_assembly_evaluation_results/
