@@ -34,8 +34,8 @@ while getopts ':1:2:l:c:a:e:t:h' opt; do
     2) R2=$(realpath "${OPTARG}") ;;
     l) length="${OPTARG}" ;;
     c) clade="${OPTARG}" ;;
-    a) asmbl_flag=false ;;
-    e) eval_flag=false ;;
+    a) eval_flag=false ;;
+    e) asmbl_flag=false ;;
     t) threads="${OPTARG}" ;;
 		h) echo "${usage}"
        exit ;;
@@ -50,6 +50,9 @@ done
 shift $((OPTIND - 1))
 
 echo $R1
+echo $R2
+echo $length
+echo $clade
 
 # Check if required options are set
 if [[ -z "${R1}" || -z "${R2}" || -z "${length}" || -z "${clade}" ]]; then
