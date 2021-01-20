@@ -210,7 +210,7 @@ if [[ "${eval_flag}" == "true" ]]; then
   	--fastq2 ${R2} \
   	--fastq_read_length ${length} \
   	--fastafile ${assembly_result}
-    rm tmp/ ${assembler}_findmitoscaf.result/tmp_findmitoscaf/
+    rm -r tmp/
 
   	## Annotate module
     step_description_and_time "Running MitoZ annotate module on ${assembler} output"
@@ -222,10 +222,12 @@ if [[ "${eval_flag}" == "true" ]]; then
   	--fastq1 ${R1} \
   	--fastq2 ${R2} \
   	--fastafile ${assembler}_findmitoscaf.result/${assembler}_findmitoscaf.mitogenome.fa
-  	mv tmp/ ${assembler}_annotate.result/tmp_annotate/
+  	rm -r tmp/
+    ## Rename result files
     for i in circos.png circos.svg summary.txt; do
       mv ${assembler}_annotate.result/${i} ${assembler}_annotate.result/${assembler}_${i}
     done
+    ## Copy result files and remove folders to save space
     cp ${assembler}_annotate.result/*circos* circos/
     cp ${assembler}_annotate.result/*summary.txt summaries/
     rm -r ${assembler}_*.result/
