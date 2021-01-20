@@ -167,7 +167,7 @@ fi
 if [[ "${eval_flag}" == "true" ]]; then
   # Make list of files from assemblers (all but MitoZ)
   assembly_list=(MEGAHIT/final.contigs.fa SPADES/scaffolds.fasta RNASPADES/transcripts.fasta IDBA_UD/contig.fa IDBA_TRAN/contig.fa \
-  TRINITY/Trinity.fa MITOZ_ASSEMBLY.result/mitoz.mitogenome.fa)
+  TRINITY/Trinity.fasta MITOZ_ASSEMBLY.result/mitoz.mitogenome.fa)
 
   # Running the MitoZ modules findmitoscaf and annotate on all assembly outputs
   mkdir -p evaluation/
