@@ -13,14 +13,14 @@ cmd="$0 $@" # Make variable containing full used command to print command in log
 usage="$(basename "$0") -1 <R1.fastq> -2 <R2.fastq> -l <length> -c <clade> [-t <n> -ae]
 
 Usage:
-	-1  Reads1
-	-2  Reads2
-	-l  Read length (needed for Mitoz)
+  -1  Reads1
+  -2  Reads2
+  -l  Read length (needed for Mitoz)
   -c  Clade of species ('Arthropoda' or 'Chordata')
   -a  Assemblies only
   -e  Evaluation only
   -t  Threads (default: 16)
-	-h  Display this help and exit"
+  -h  Display this help and exit"
 
 # Set default options:
 threads='16'
@@ -48,6 +48,8 @@ while getopts ':1:2:l:c:a:e:t:h' opt; do
   esac
 done
 shift $((OPTIND - 1))
+
+echo $R1
 
 # Check if required options are set
 if [[ -z "${R1}" || -z "${R2}" || -z "${length}" || -z "${clade}" ]]; then
