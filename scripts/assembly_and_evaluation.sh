@@ -91,8 +91,8 @@ echo -e "Number of threads was set to ${threads}.\n"
 echo -e "Script started with full command: ${cmd}\n"
 
 # Make output dir
-mkdir -p mitogenome_assembly_and_evaluation/
-cd mitogenome_assembly_and_evaluation/
+mkdir -p mitogenome_assembly_evaluation_results/
+cd mitogenome_assembly_evaluation_results/
 
 
 if [[ "${asmbl_flag}" == "true" ]]; then
