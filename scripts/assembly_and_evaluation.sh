@@ -122,14 +122,14 @@ if [[ "${asmbl_flag}" == "true" ]]; then
   fq2fa --merge --filter ${R1} ${R2} idba_input.fa
   idba_ud --num_threads ${threads} --pre_correction -r idba_input.fa -o IDBA_UD/
   cp idba_input.fa IDBA_UD/
-  mv IDBA_UD/contig.fa assemblies/
+  mv IDBA_UD/contig.fa assemblies/contig_IDBA_UD.fa
   rm -r IDBA_UD/ # remove to save space
 
   ## Running IDBA-tran
   step_description_and_time "Running IDBA-tran"
   idba_tran --num_threads ${threads} --pre_correction -l idba_input.fa -o IDBA_TRAN/
   mv idba_input.fa IDBA_TRAN/
-  mv IDBA_TRAN/contig.fa assemblies/
+  mv IDBA_TRAN/contig.fa assemblies/contig_IDBA_TRAN.fa
   rm -r IDBA_TRAN/ # remove to save space
 
   ## Running Trinity
@@ -166,7 +166,7 @@ fi
 
 if [[ "${eval_flag}" == "true" ]]; then
   # Make list of files from assemblers (all but MitoZ)
-  assembly_list=(MEGAHIT/final.contigs.fa SPADES/scaffolds.fasta RNASPADES/transcripts.fasta IDBA_UD/contig.fa IDBA_TRAN/contig.fa \
+  assembly_list=(MEGAHIT/final.contigs.fa SPADES/scaffolds.fasta RNASPADES/transcripts.fasta IDBA_UD/contig_IDBA_UD.fa IDBA_TRAN/contig_IDBA_TRAN.fa \
   TRINITY/Trinity.fasta MITOZ_ASSEMBLY.result/mitoz.mitogenome.fa)
 
   # Running the MitoZ modules findmitoscaf and annotate on all assembly outputs
@@ -210,7 +210,7 @@ if [[ "${eval_flag}" == "true" ]]; then
   	--fastq2 ${R2} \
   	--fastq_read_length ${length} \
   	--fastafile ${assembly_result}
-    mv tmp/ ${assembler}_findmitoscaf.result/tmp_findmitoscaf/
+    rm tmp/ ${assembler}_findmitoscaf.result/tmp_findmitoscaf/
 
   	## Annotate module
     step_description_and_time "Running MitoZ annotate module on ${assembler} output"
@@ -223,7 +223,7 @@ if [[ "${eval_flag}" == "true" ]]; then
   	--fastq2 ${R2} \
   	--fastafile ${assembler}_findmitoscaf.result/${assembler}_findmitoscaf.mitogenome.fa
   	mv tmp/ ${assembler}_annotate.result/tmp_annotate/
-    for i in circos.jpg circos.svg summary.txt; do
+    for i in circos.png circos.svg summary.txt; do
       mv ${assembler}_annotate.result/${i} ${assembler}_annotate.result/${assembler}_${i}
     done
     cp ${assembler}_annotate.result/*circos* circos/
