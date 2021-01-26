@@ -9,8 +9,6 @@
 # To download/install all programs and add them to the PATH automatically,
 # run the following script as follows: source mitogenome_assembly_evaluation_installations.sh
 
-# TO DO: save actual scaffold .fa files
-
 cmd="$0 $@" # Make variable containing full used command to print command in logfile
 usage="$(basename "$0") -1 <R1.fastq> -2 <R2.fastq> -l <length> -c <clade> [-t <n> -aes]
 
@@ -76,20 +74,26 @@ else
   genetic_code='2'
 fi
 
-# Define function to print steps with time
+# Define functions
+## Define function to print steps with time
 start=$(date +%s)
 step_description_and_time () {
 	echo -e "\n======== [$(date +%H:%M:%S)] ${1} [Runtime: $((($(date +%s)-$start)/3600))h $(((($(date +%s)-$start)%3600)/60))m] ========\n" #" adding outcommented quote here to fix bug in colouring scheme of personal text editor
 }
 
-# Define function to get the scaffold info that's at the top of every MitoZ summary file
+## Define function to get the scaffold info that's at the top of every MitoZ summary file
 get_scaffold_info () {
   sed "/--/q" "${1}" | head -n -4 | tail -n +2
 }
 
-# Define function to get the closely related species info from the scaffold info
+## Define function to get the closely related species info from the scaffold info
 get_spec_name () {
   get_scaffold_info "${1}" | grep -Po '[A-Za-z]* [a-z]* *$'
+}
+
+## Define function to info about found and missing genes:
+get_gene_info () {
+  grep "${1}" "${2}" | cut -f 2 -d ":" | sed 's/ //g'
 }
 
 
@@ -191,7 +195,7 @@ if [[ "${eval_flag}" == "true" ]]; then
   mkdir -p evaluation/
   mkdir -p evaluation/circos/
   mkdir -p evaluation/summaries/
-  mkidr -p evaluation/mitogenome_scaffolds/
+  mkdir -p evaluation/mitogenome_scaffolds/
 
   # Make master file for master summary output
   echo -e "Assembler\tScaffolds\tCircular\tClosely related species\tProtein coding genes\ttRNA genes\trRNA genes\tTotal genes\tMissing genes" \
@@ -291,10 +295,10 @@ if [[ "${eval_flag}" == "true" ]]; then
     fi
 
     ### Get info about found and missing genes:
-    pcg=$(grep "Protein coding genes totally found" "${summary_file}" | cut -f 2 -d ":" | sed 's/ //g')
-    trna=$(grep "tRNA genes totally found" "${summary_file}" | cut -f 2 -d ":" | sed 's/ //g')
-    rrna=$(grep "rRNA genes totally found" "${summary_file}" | cut -f 2 -d ":" | sed 's/ //g')
-    total=$(grep "Genes totally found" "${summary_file}" | cut -f 2 -d ":" | sed 's/ //g')
+    pcg=$(get_gene_info "Protein coding genes totally found" "${summary_file}")
+    trna=$(get_gene_info "tRNA genes totally found" "${summary_file}")
+    rrna=$(get_gene_info "rRNA genes totally found" "${summary_file}")
+    total=$(get_gene_info "Genes totally found" "${summary_file}")
     if [[ $(sed -n '/Potential missing genes/,$p' "${summary_file}") ]]; then
       miss=$(sed -n '/Potential missing genes/,$p' "${summary_file}" | head -n -5 \
       | tail -n +4 | sed 's/^[^ ]* *//g' | awk '{s+=$1} END {print s}')
