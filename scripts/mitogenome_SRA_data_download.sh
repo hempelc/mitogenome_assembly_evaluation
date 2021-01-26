@@ -44,6 +44,7 @@ then
 fi
 
 while read SRA_number; do
+	echo "Downloading ${SRA_number}..."
   mkdir ${SRA_number}_reads
   fasterq-dump --split-3 --threads ${threads} --outdir ${SRA_number}_reads/ \
   ${SRA_number}
