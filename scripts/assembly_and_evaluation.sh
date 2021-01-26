@@ -32,7 +32,7 @@ shutdown=false
 output_dir='mitogenome_assembly_evaluation_results/'
 
 # Set specified options
-while getopts ':1:2:l:c:aesot:h' opt; do
+while getopts ':1:2:l:c:aeso:t:h' opt; do
   case "${opt}" in
     1) R1=$(realpath "${OPTARG}") ;;
     2) R2=$(realpath "${OPTARG}") ;;
