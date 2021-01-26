@@ -10,7 +10,7 @@
 # run the following script as follows: source mitogenome_assembly_evaluation_installations.sh
 
 cmd="$0 $@" # Make variable containing full used command to print command in logfile
-usage="$(basename "$0") -1 <R1.fastq> -2 <R2.fastq> -l <length> -c <clade> [-t <n> -aes]
+usage="$(basename "$0") -1 <R1.fastq> -2 <R2.fastq> -l <length> -c <clade> [-t <n> -aeso]
 
 Usage:
   -1  Reads1
@@ -20,6 +20,7 @@ Usage:
   -a  Assemblies only
   -e  Evaluation only
   -s  Shut down machine after script is done (to minimize costs for AWS)
+  -o  Output directory (default: mitogenome_assembly_evaluation_results/)
   -t  Threads (default: 16)
   -h  Display this help and exit"
 
@@ -28,9 +29,10 @@ threads='16'
 asmbl_flag=true
 eval_flag=true
 shutdown=false
+output_dir='mitogenome_assembly_evaluation_results/'
 
 # Set specified options
-while getopts ':1:2:l:c:aest:h' opt; do
+while getopts ':1:2:l:c:aesot:h' opt; do
   case "${opt}" in
     1) R1=$(realpath "${OPTARG}") ;;
     2) R2=$(realpath "${OPTARG}") ;;
@@ -39,6 +41,7 @@ while getopts ':1:2:l:c:aest:h' opt; do
     a) eval_flag=false ;;
     e) asmbl_flag=false ;;
     s) shutdown=true ;;
+    o) output_dir="${OPTARG}" ;;
     t) threads="${OPTARG}" ;;
 		h) echo "${usage}"
        exit ;;
@@ -111,8 +114,8 @@ echo -e "Number of threads was set to ${threads}.\n"
 echo -e "Script started with full command: ${cmd}\n"
 
 # Make output dir
-mkdir -p mitogenome_assembly_evaluation_results/
-cd mitogenome_assembly_evaluation_results/
+mkdir -p "${output_dir}"
+cd "${output_dir}"
 
 
 if [[ "${asmbl_flag}" == "true" ]]; then
@@ -320,7 +323,7 @@ cd ..
 
 # Make log file and move it into dir
 ) 2>&1 | tee mitogenome_assembly_log.txt # Make logfile
-mv mitogenome_assembly_log.txt mitogenome_assembly_evaluation_results/
+mv mitogenome_assembly_log.txt "${output_dir}"
 
 # Shut down machine if wanted
 if [[ "${shutdown}" == "true" ]]; then
