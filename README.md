@@ -1,5 +1,5 @@
 # _*Mitogenome assembly evaluation and comparison*_
-<img src="https://github.com/hempelc/mitogenome_assembly_evaluation/blob/main/image.png" alt="mitogenomes" width="300"/>
+<img src="https://github.com/hempelc/mitogenome_assembly_evaluation/blob/main/image.png" alt="mitogenomes" width="400"/>
 
 This project compares and evaluates different mitogenome assemblers. The repo contains scripts for program installation, data download, and assemblies.
 
